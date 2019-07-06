@@ -37,6 +37,10 @@ public abstract class MovingObject : MonoBehaviour
         return false;
     }
 
+    // If the MovingObject can move into fields of T in the Blocking Layer,
+    // move it.
+    // Otherwise, call OnCantMove for the MovingObject.
+    //
     protected virtual void AttemptMove<T>(int xDir, int yDir)
         where T: Component
     {

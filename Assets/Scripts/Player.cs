@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MovingObject
 {
@@ -12,6 +13,15 @@ public class Player : MovingObject
 
     private Animator animator;
     private int food;
+    public Text foodText;
+
+    public AudioClip moveSound1;
+    public AudioClip moveSound2;
+    public AudioClip eatSound1;
+    public AudioClip eatSound2;
+    public AudioClip drinkSound1;
+    public AudioClip drinkSound2;
+    public AudioClip gameOverSound;
 
     protected override void OnCantMove<T>(T component)
     {
@@ -23,16 +33,23 @@ public class Player : MovingObject
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log("Hit: " + other.tag);
+
         if (other.tag == "Exit")
         {
             Invoke("Restart", restartLevelDelay);
             enabled = false;
         } else if (other.tag == "Food")
         {
+            SoundManager.instance.RandomizeSfx(eatSound1,eatSound2);
+            foodText.text = "Food: " + food + "(+ " + pointsPerFood + ")"; 
             food += pointsPerFood;
             other.gameObject.SetActive(false);
         } else if (other.tag == "Soda")
         {
+            SoundManager.instance.RandomizeSfx(drinkSound1, drinkSound2);
+
+            foodText.text = "Food: " + food + "(+ " + pointsPerSoda + ")";
             food += pointsPerSoda;
             other.gameObject.SetActive(false);
         }
@@ -49,17 +66,23 @@ public class Player : MovingObject
     {
         animator.SetTrigger("playerHit");
         food -= loss;
+        foodText.text = "Food: " + food + "(- " + loss + ")";
         CheckIfGameOver();
     }
 
     protected override void AttemptMove<T>(int xDir, int yDir)
     {
         food--;
+        foodText.text = "Food: " + food;
 
-        // TODO: Fail move attempt if other entity exists in previous
-        // phase in turn
         base.AttemptMove<T>(xDir, yDir);
         CheckIfGameOver();
+
+        RaycastHit2D hit;
+        if (Move (xDir,yDir, out hit))
+        {
+            SoundManager.instance.RandomizeSfx(moveSound1, moveSound2);
+        }
 
         GameManager.instance.playersTurn = false;
     }
@@ -70,6 +93,7 @@ public class Player : MovingObject
         animator = GetComponent<Animator>();
 
         food = GameManager.instance.playerFoodPoints;
+        foodText.text = "Food: " + food;
 
         base.Start();
     }
@@ -101,6 +125,10 @@ public class Player : MovingObject
     private void CheckIfGameOver()
     {
         if (food <= 0)
+        {
+            SoundManager.instance.PlaySingle(gameOverSound);
+            SoundManager.instance.musicSource.Stop();
             GameManager.instance.GameOver();
+        }
     }
 }

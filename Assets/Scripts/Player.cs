@@ -23,6 +23,14 @@ public class Player : MovingObject
     public AudioClip drinkSound2;
     public AudioClip gameOverSound;
 
+    public GameObject shieldPrefab;
+    public GameObject shield;
+
+    private void Awake()
+    {
+        shield = Instantiate(shieldPrefab);
+        shield.SetActive(false);
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Hit: " + other.tag);
@@ -56,6 +64,9 @@ public class Player : MovingObject
 
     public void LoseFood(int loss)
     {
+        // Block incoming damage on turns with multiple of 5
+        if (GameManager.instance.turn % 5 == 0) return;
+
         animator.SetTrigger("playerHit");
         food -= loss;
         foodText.text = "Food: " + food + "(- " + loss + ")";
@@ -101,6 +112,16 @@ public class Player : MovingObject
             spriteRenderer.color = Color.white;
         }
 
+        // Every 5 turns, block all incoming damage
+        if (GameManager.instance.turn % 5 == 0)
+        {
+            shield.transform.position = transform.position;
+            shield.SetActive(true);
+        } else
+        {
+            shield.SetActive(false);
+        }
+
         if (horizontal != 0 || vertical != 0)
         {
             // Player's turn begins
@@ -137,7 +158,6 @@ public class Player : MovingObject
                     Debug.Log("Player hit something.");
                 }
             }
-
             GameManager.instance.ChangePhase(GameManager.Phase.ENEMIES);
         }
     }

@@ -117,11 +117,11 @@ public class GameManager : MonoBehaviour
             case Phase.SETUP:
                 break;
             case Phase.PLAYER:
+                break;
+            case Phase.ENEMIES:
                 turn++;
                 turnText = GameObject.Find("TurnText").GetComponent<Text>();
                 turnText.text = "Turn: " + turn;
-                break;
-            case Phase.ENEMIES:
                 StartCoroutine(MoveEnemies());
                 break;
             default:

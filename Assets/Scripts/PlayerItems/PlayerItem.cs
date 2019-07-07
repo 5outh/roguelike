@@ -29,6 +29,11 @@ public abstract class PlayerItem : MonoBehaviour
         // By default, do nothing
     }
 
+    public virtual void OnHitWall(Wall wall)
+    {
+        // By default, do nothing
+    }
+
     public virtual void OnLoseFood(int loss)
     {
         // By default, do nothing

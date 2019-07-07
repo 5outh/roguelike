@@ -148,8 +148,10 @@ public class Player : MovingObject
                 if (hitWall != null)
                 {
                     Debug.Log("Player hit a wall");
-                    hitWall.DamageWall(wallDamage);
-                    animator.SetTrigger("playerChop");
+                    foreach (PlayerItem item in playerItems)
+                    {
+                        item.OnHitWall(hitWall);
+                    }
                 }
                 else if (hitEnemy != null)
                 {

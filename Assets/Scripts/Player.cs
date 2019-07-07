@@ -81,7 +81,7 @@ public class Player : MovingObject
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.instance.playersTurn) return;
+        if (GameManager.instance.phase != GameManager.Phase.PLAYER) return;
 
         int horizontal = (int)Input.GetAxisRaw("Horizontal");
         int vertical = (int)Input.GetAxisRaw("Vertical");
@@ -127,7 +127,7 @@ public class Player : MovingObject
                 }
             }
 
-            GameManager.instance.playersTurn = false;
+            GameManager.instance.ChangePhase(GameManager.Phase.ENEMIES);
         }
     }
 

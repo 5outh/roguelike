@@ -12,14 +12,19 @@ public class GameManager : MonoBehaviour
 
     private int level = 1;
     public int playerFoodPoints = 100;
-    [HideInInspector] public bool playersTurn = true;
     private List<Enemy> enemies;
-    private bool enemiesMoving;
     public float levelStartDelay;
     private Text levelText;
     private GameObject levelImage;
-    private bool doingSetup;
     public GameObject playerPrefab;
+    [HideInInspector] public Phase phase = Phase.SETUP;
+
+    public enum Phase
+    {
+        PLAYER,
+        ENEMIES,
+        SETUP
+    };
 
     void Awake()
     {
@@ -40,16 +45,13 @@ public class GameManager : MonoBehaviour
 
     void InitGame()
     {
-        doingSetup = true;
-        print("setting up level image");
+        ChangePhase(Phase.SETUP);
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
         levelText.text = "Day " + level;
         levelImage.SetActive(true);
-        print("set up level image");
         Invoke("HideLevelImage", levelStartDelay);
 
-        //Instantiate(playerPrefab, new Vector3(0, 0), Quaternion.identity);
         enemies.Clear();
         boardScript.SetupScene(level);
     }
@@ -65,7 +67,7 @@ public class GameManager : MonoBehaviour
     {
         print("unset level image");
         levelImage.SetActive(false);
-        doingSetup = false;
+        phase = Phase.PLAYER;
     }
 
     void OnLevelWasLoaded(int _level)
@@ -77,8 +79,6 @@ public class GameManager : MonoBehaviour
 
     IEnumerator MoveEnemies()
     {
-        enemiesMoving = true;
-
         yield return new WaitForSeconds(turnDelay);
 
         if (enemies.Count == 0)
@@ -92,8 +92,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(enemy.moveTime);
         }
 
-        playersTurn = true;
-        enemiesMoving = false;
+        ChangePhase(Phase.PLAYER);
     }
 
     public void GameOver()
@@ -103,12 +102,22 @@ public class GameManager : MonoBehaviour
         enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ChangePhase(Phase p)
     {
-        if (playersTurn || enemiesMoving || doingSetup)
-            return;
-        StartCoroutine(MoveEnemies());
+        phase = p;
+
+        switch (p)
+        {
+            case Phase.SETUP:
+                break;
+            case Phase.PLAYER:
+                break;
+            case Phase.ENEMIES:
+                StartCoroutine(MoveEnemies());
+                break;
+            default:
+                break;
+        }
     }
 
     public void AddEnemyToList(Enemy script)

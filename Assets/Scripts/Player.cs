@@ -26,11 +26,14 @@ public class Player : MovingObject
     public GameObject shieldPrefab;
     public GameObject shield;
 
+    public List<PlayerItem> playerItems = new List<PlayerItem>();
+
     private void Awake()
     {
         shield = Instantiate(shieldPrefab);
         shield.SetActive(false);
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Hit: " + other.tag);
@@ -53,7 +56,6 @@ public class Player : MovingObject
             food += pointsPerSoda;
             other.gameObject.SetActive(false);
         }
-
     }
 
     private void Restart()
@@ -89,6 +91,11 @@ public class Player : MovingObject
         GameManager.instance.playerFoodPoints = food;
     }
 
+    void EnableAttack()
+    {
+
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -102,14 +109,10 @@ public class Player : MovingObject
             vertical = 0;
         }
 
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (GameManager.instance.turn % 3 == 0)
+        foreach (PlayerItem item in playerItems)
         {
-            spriteRenderer.color = Color.red;
-        }
-        else
-        {
-            spriteRenderer.color = Color.white;
+            item.turn = GameManager.instance.turn;
+            item.Display();
         }
 
         // Every 5 turns, block all incoming damage
@@ -150,14 +153,17 @@ public class Player : MovingObject
                 else if (hitEnemy != null)
                 {
                     Debug.Log("Player hit an enemy");
-                    // Crush the enemy immediately every 3 turns
-                    GameManager.instance.KillEnemy(hitEnemy);
+                    foreach (PlayerItem item in playerItems)
+                    {
+                        item.OnHitEnemy(hitEnemy);
+                    }
 
                 } else
                 {
                     Debug.Log("Player hit something.");
                 }
             }
+
             GameManager.instance.ChangePhase(GameManager.Phase.ENEMIES);
         }
     }

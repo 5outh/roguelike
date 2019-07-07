@@ -4,16 +4,25 @@ using UnityEngine;
 
 public class SuperAttack : PlayerItem
 {
-    public override void Display()
+    public override void OnPlayerTurnStart()
     {
         SpriteRenderer spriteRenderer = player.GetComponent<SpriteRenderer>();
 
         if (isActive)
         {
             spriteRenderer.color = Color.red;
-            return;
+        } else
+        {
+            // Not sure why this has to be here, but things need to reset
+            // at the beginning of the turn.
+            // I think there is a race condition on Update functions.
+            //spriteRenderer.color = Color.white;
         }
+    }
 
+    public override void OnPlayerTurnEnd()
+    {
+        SpriteRenderer spriteRenderer = player.GetComponent<SpriteRenderer>();
         spriteRenderer.color = Color.white;
     }
 

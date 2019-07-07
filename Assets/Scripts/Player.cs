@@ -26,6 +26,8 @@ public class Player : MovingObject
     public GameObject shieldPrefab;
     public GameObject shield;
 
+    public bool damageNegated = false;
+
     public List<PlayerItem> playerItems = new List<PlayerItem>();
 
     private void Awake()
@@ -66,13 +68,21 @@ public class Player : MovingObject
 
     public void LoseFood(int loss)
     {
-        // Block incoming damage on turns with multiple of 5
-        if (GameManager.instance.turn % 5 == 0) return;
+        foreach (PlayerItem item in playerItems)
+        {
+            item.OnLoseFood(loss);
+        }
 
-        animator.SetTrigger("playerHit");
-        food -= loss;
-        foodText.text = "Food: " + food + "(- " + loss + ")";
-        CheckIfGameOver();
+        if (damageNegated)
+        {
+            foodText.text = "Food: " + food + "(Damage Negated!)";
+        } else
+        {
+            animator.SetTrigger("playerHit");
+            food -= loss;
+            foodText.text = "Food: " + food + "(- " + loss + ")";
+            CheckIfGameOver();
+        }
     }
 
     // Start is called before the first frame update
@@ -111,18 +121,9 @@ public class Player : MovingObject
 
         foreach (PlayerItem item in playerItems)
         {
-            item.turn = GameManager.instance.turn;
-            item.Display();
-        }
-
-        // Every 5 turns, block all incoming damage
-        if (GameManager.instance.turn % 5 == 0)
-        {
-            shield.transform.position = transform.position;
-            shield.SetActive(true);
-        } else
-        {
-            shield.SetActive(false);
+            // TODO: Can this be done automatically?
+            item.UpdateTurn(GameManager.instance.turn);
+            item.OnPlayerTurnStart();
         }
 
         if (horizontal != 0 || vertical != 0)
@@ -162,6 +163,11 @@ public class Player : MovingObject
                 {
                     Debug.Log("Player hit something.");
                 }
+            }
+
+            foreach (PlayerItem item in playerItems)
+            {
+                item.OnPlayerTurnEnd();
             }
 
             GameManager.instance.ChangePhase(GameManager.Phase.ENEMIES);

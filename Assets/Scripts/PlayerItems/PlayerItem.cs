@@ -9,7 +9,7 @@ public abstract class PlayerItem : MonoBehaviour
     public bool isActive;
 
     // Current turn
-    [HideInInspector] public int turn;
+    public int turn = 1;
 
     // Cycle length of this item
     public int cycleLength;
@@ -29,7 +29,7 @@ public abstract class PlayerItem : MonoBehaviour
         // By default, do nothing
     }
 
-    public virtual void OnLoseFood()
+    public virtual void OnLoseFood(int loss)
     {
         // By default, do nothing
     }
@@ -39,8 +39,20 @@ public abstract class PlayerItem : MonoBehaviour
         // by default, do nothing
     }
 
-    private void Update()
+    public virtual void OnPlayerTurnStart()
     {
+        // by default, do nothing
+    }
+
+    public virtual void OnPlayerTurnEnd()
+    {
+        // by default, do nothing
+    }
+
+    public void UpdateTurn(int theTurn)
+    {
+        turn = theTurn;
+
         Debug.Log("Turn: " + turn);
         Debug.Log("Cycle Length: " + cycleLength);
 

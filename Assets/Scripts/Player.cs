@@ -23,14 +23,6 @@ public class Player : MovingObject
     public AudioClip drinkSound2;
     public AudioClip gameOverSound;
 
-    protected override void OnCantMove<T>(T component)
-    {
-        Wall hitWall = component as Wall;
-        hitWall.DamageWall(wallDamage);
-
-        animator.SetTrigger("playerChop");
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Hit: " + other.tag);
@@ -70,23 +62,6 @@ public class Player : MovingObject
         CheckIfGameOver();
     }
 
-    protected override void AttemptMove<T>(int xDir, int yDir)
-    {
-        food--;
-        foodText.text = "Food: " + food;
-
-        base.AttemptMove<T>(xDir, yDir);
-        CheckIfGameOver();
-
-        RaycastHit2D hit;
-        if (Move (xDir,yDir, out hit))
-        {
-            SoundManager.instance.RandomizeSfx(moveSound1, moveSound2);
-        }
-
-        GameManager.instance.playersTurn = false;
-    }
-
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -118,7 +93,41 @@ public class Player : MovingObject
 
         if (horizontal != 0 || vertical != 0)
         {
-            AttemptMove<Wall>(horizontal, vertical);
+            // Player's turn begins
+            food--;
+            foodText.text = "Food: " + food;
+            CheckIfGameOver();
+
+            Vector2 end = GetMoveCoordinates(horizontal, vertical);
+            Transform hitTransform = CanMove(end);
+
+            if (hitTransform == null)
+            {
+                MoveSmooth(end);
+                SoundManager.instance.RandomizeSfx(moveSound1, moveSound2);
+            } else
+            {
+                Wall hitWall = hitTransform.GetComponent<Wall>();
+                Enemy hitEnemy = hitTransform.GetComponent<Enemy>();
+
+                if (hitWall != null)
+                {
+                    Debug.Log("Player hit a wall");
+                    hitWall.DamageWall(wallDamage);
+                    animator.SetTrigger("playerChop");
+                }
+                else if (hitEnemy != null)
+                {
+                    Debug.Log("Player hit an enemy");
+                    // Crush the enemy immediately
+                    //GameManager.instance.KillEnemy(hitEnemy);
+                } else
+                {
+                    Debug.Log("Player hit something.");
+                }
+            }
+
+            GameManager.instance.playersTurn = false;
         }
     }
 

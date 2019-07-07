@@ -7,7 +7,7 @@ public abstract class MovingObject : MonoBehaviour
     public float moveTime = 0.1f;
     public LayerMask blockingLayer;
 
-    private BoxCollider2D boxCollider;
+    protected BoxCollider2D boxCollider;
     private Rigidbody2D rb2D;
     private float inverseMoveTime;
 
@@ -19,43 +19,33 @@ public abstract class MovingObject : MonoBehaviour
         inverseMoveTime = 1f / moveTime;
     }
 
-    protected bool Move (int xDir, int yDir, out RaycastHit2D hit)
+    protected Transform CanMove(Vector2 end)
     {
-        Vector2 start = transform.position;
-        Vector2 end = start + new Vector2(xDir, yDir);
-
         boxCollider.enabled = false;
-        hit = Physics2D.Linecast(start, end, blockingLayer);
+        RaycastHit2D hit = Physics2D.Linecast(
+            transform.position,
+            end,
+            blockingLayer
+        );
         boxCollider.enabled = true;
 
         if (hit.transform == null)
         {
-            StartCoroutine(SmoothMovement(end));
-            return true;
+            return null;
         }
 
-        return false;
+        return hit.transform;
     }
 
-    // If the MovingObject can move into fields of T in the Blocking Layer,
-    // move it.
-    // Otherwise, call OnCantMove for the MovingObject.
-    //
-    protected virtual void AttemptMove<T>(int xDir, int yDir)
-        where T: Component
+    protected Vector2 GetMoveCoordinates(int xDir, int yDir)
     {
-        RaycastHit2D hit;
-        bool canMove = Move(xDir, yDir, out hit);
+        Vector2 start = transform.position;
+        return start + new Vector2(xDir, yDir);
+    }
 
-        if (hit.transform == null)
-            return;
-
-        T hitComponent = hit.transform.GetComponent<T>();
-
-        if (!canMove && hitComponent != null)
-        {
-            OnCantMove(hitComponent);
-        }
+    protected void MoveSmooth(Vector2 end)
+    {
+        StartCoroutine(SmoothMovement(end));
     }
 
     protected IEnumerator SmoothMovement (Vector3 end)
@@ -69,9 +59,6 @@ public abstract class MovingObject : MonoBehaviour
             yield return null;
         }
     }
-
-    protected abstract void OnCantMove<T>(T component)
-        where T : Component;
 
     // Update is called once per frame
     void Update()

@@ -54,6 +54,13 @@ public class GameManager : MonoBehaviour
         boardScript.SetupScene(level);
     }
 
+
+    public void KillEnemy(Enemy enemy)
+    {
+        enemies.Remove(enemy);
+        enemy.gameObject.SetActive(false);
+    }
+
     private void HideLevelImage()
     {
         print("unset level image");

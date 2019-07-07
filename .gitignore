@@ -6,3 +6,4 @@ Logs/
 Packages/
 Temp/
 obj/
+*.app/

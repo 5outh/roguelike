@@ -91,6 +91,16 @@ public class Player : MovingObject
             vertical = 0;
         }
 
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (GameManager.instance.turn % 3 == 0)
+        {
+            spriteRenderer.color = Color.red;
+        }
+        else
+        {
+            spriteRenderer.color = Color.white;
+        }
+
         if (horizontal != 0 || vertical != 0)
         {
             // Player's turn begins
@@ -119,8 +129,9 @@ public class Player : MovingObject
                 else if (hitEnemy != null)
                 {
                     Debug.Log("Player hit an enemy");
-                    // Crush the enemy immediately
-                    //GameManager.instance.KillEnemy(hitEnemy);
+                    // Crush the enemy immediately every 3 turns
+                    GameManager.instance.KillEnemy(hitEnemy);
+
                 } else
                 {
                     Debug.Log("Player hit something.");

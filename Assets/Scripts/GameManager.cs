@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     [HideInInspector] public Phase phase = Phase.SETUP;
 
+    public Text turnText;
+    public int turn = 1;
+
     public enum Phase
     {
         PLAYER,
@@ -51,6 +54,9 @@ public class GameManager : MonoBehaviour
         levelText.text = "Day " + level;
         levelImage.SetActive(true);
         Invoke("HideLevelImage", levelStartDelay);
+
+        turnText = GameObject.Find("TurnText").GetComponent<Text>();
+        turnText.text = "Turn: " + turn;
 
         enemies.Clear();
         boardScript.SetupScene(level);
@@ -111,6 +117,9 @@ public class GameManager : MonoBehaviour
             case Phase.SETUP:
                 break;
             case Phase.PLAYER:
+                turn++;
+                turnText = GameObject.Find("TurnText").GetComponent<Text>();
+                turnText.text = "Turn: " + turn;
                 break;
             case Phase.ENEMIES:
                 StartCoroutine(MoveEnemies());

@@ -19,10 +19,10 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public int columns = 8;
-    public int rows = 8;
-    public Count wallCount = new Count(5, 9);
-    public Count foodCount = new Count(1, 5);
+    public int columns;
+    public int rows;
+    public Count wallCount = new Count(12, 21);
+    public Count foodCount = new Count(1, 6);
 
     public GameObject exit;
     public GameObject[] floorTiles;
@@ -51,6 +51,9 @@ public class BoardManager : MonoBehaviour
     {
         boardHolder = new GameObject("Board").transform;
 
+        Debug.Log("Columns " + columns);
+        Debug.Log("Rows " + rows);
+
         for (int x = -1; x < columns + 1; x++)
         {
             for (int y = -1; y < rows + 1; y++)
@@ -61,7 +64,7 @@ public class BoardManager : MonoBehaviour
                     floorTilePrefab = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
                 }
 
-                GameObject floorTile = Instantiate(floorTilePrefab, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
+                GameObject floorTile = Instantiate(floorTilePrefab, new Vector3(x, y, 0f), Quaternion.identity);
                 floorTile.transform.SetParent(boardHolder);
             }
         }
@@ -93,21 +96,8 @@ public class BoardManager : MonoBehaviour
         InitializeList();
         LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
         LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
-        int enemyCount = (int)Mathf.Log(level, 2f);
+        int enemyCount = (int)Mathf.Log(level * 6, 2f);
         LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
         Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class PlayerItem : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public abstract class PlayerItem : MonoBehaviour
 
     // Cycle length of this item
     public int cycleLength;
+
+    // The icon to show in the item cycle
+    public Image icon;
 
     protected virtual void Activate()
     {
@@ -58,9 +62,6 @@ public abstract class PlayerItem : MonoBehaviour
     {
         turn = theTurn;
 
-        Debug.Log("Turn: " + turn);
-        Debug.Log("Cycle Length: " + cycleLength);
-
         if (turn % cycleLength == 0)
         {
             Activate();
@@ -69,5 +70,11 @@ public abstract class PlayerItem : MonoBehaviour
         {
             Deactivate();
         }
+    }
+
+    // Check if this item is active on the current turn
+    public bool isActiveOnTurn(int theTurn)
+    {
+        return theTurn % cycleLength == 0;
     }
 }

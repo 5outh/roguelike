@@ -25,6 +25,7 @@ public class Player : MovingObject
 
     public GameObject shieldPrefab;
     public GameObject shield;
+    public GameObject itemCycleImage;
 
     public bool damageNegated = false;
 
@@ -125,6 +126,10 @@ public class Player : MovingObject
             item.UpdateTurn(GameManager.instance.turn);
             item.OnPlayerTurnStart();
         }
+
+        // NB. This is inefficient
+        ItemCycle itemCycle = itemCycleImage.GetComponent<ItemCycle>();
+        itemCycle.Render(playerItems, GameManager.instance.turn);
 
         if (horizontal != 0 || vertical != 0)
         {

@@ -39,7 +39,7 @@ public class Player : MovingObject
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Hit: " + other.tag);
+        Debug.Log("Player Hit: " + other.tag);
 
         if (other.tag == "Exit")
         {

@@ -78,13 +78,14 @@ public class GameManager : MonoBehaviour
 
     void OnLevelWasLoaded(int _level)
     {
-        // TODO: Refactor
+        // TODO: Refactor (this is deprecated)
         level++;
         InitGame();
     }
 
     IEnumerator MoveEnemies()
     {
+        // Wait for the Player to move before moving enemies.
         yield return new WaitForSeconds(turnDelay);
 
         if (enemies.Count == 0)
@@ -119,6 +120,8 @@ public class GameManager : MonoBehaviour
             case Phase.PLAYER:
                 break;
             case Phase.ENEMIES:
+                ClearObjectsWithTag("EnemyTarget");
+                ClearObjectsWithTag("Arrows");
                 turn++;
                 turnText = GameObject.Find("TurnText").GetComponent<Text>();
                 turnText.text = "Turn: " + turn;
@@ -132,5 +135,15 @@ public class GameManager : MonoBehaviour
     public void AddEnemyToList(Enemy script)
     {
         enemies.Add(script);
+    }
+
+    private void ClearObjectsWithTag(string theTag)
+    {
+        GameObject[] enemyTargets = GameObject.FindGameObjectsWithTag(theTag);
+
+        foreach (GameObject enemyTarget in enemyTargets)
+        {
+            Destroy(enemyTarget);
+        }
     }
 }

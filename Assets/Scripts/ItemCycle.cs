@@ -46,8 +46,6 @@ public class ItemCycle : MonoBehaviour
                 // Add an icon to the item cycle element.
                 if (playerItem.isActiveOnTurn(turn + i))
                 {
-                    Debug.Log("Got active element");
-
                     Instantiate(playerItem.icon, itemCycleElement.transform);
                 }
             }

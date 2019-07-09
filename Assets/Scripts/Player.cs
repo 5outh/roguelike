@@ -177,7 +177,7 @@ public class Player : MovingObject
                 item.OnPlayerTurnEnd();
             }
 
-            GameManager.instance.ChangePhase(GameManager.Phase.ENEMIES);
+            GameManager.instance.ChangePhase();
         }
     }
 

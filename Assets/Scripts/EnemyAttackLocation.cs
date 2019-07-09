@@ -2,6 +2,8 @@
 
 public class EnemyAttackLocation : MonoBehaviour
 {
+    public Enemy enemy;
+
     private void OnDrawGizmos()
     {
         BoxCollider2D boxCollider2D = GetComponent<BoxCollider2D>();
@@ -15,5 +17,16 @@ public class EnemyAttackLocation : MonoBehaviour
         CollisionList collisionList = gameObject.GetComponent<CollisionList>();
 
         return collisionList.Get(playerObject.GetInstanceID()) != null;
+    }
+
+    public void AttackPlayerIfColliding(int attackDamage)
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        Player player = playerObject.GetComponent<Player>();
+
+        if (IsCollidingWithPlayer())
+        {
+            player.LoseFood(attackDamage);
+        }
     }
 }

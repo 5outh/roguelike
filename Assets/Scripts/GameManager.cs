@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     private Text levelText;
     private GameObject levelImage;
     public GameObject playerPrefab;
-    [HideInInspector] public Phase phase = Phase.SETUP;
+    [HideInInspector] public Phase phase;
 
     public Text turnText;
     public int turn = 1;
@@ -26,7 +26,8 @@ public class GameManager : MonoBehaviour
     {
         PLAYER,
         ENEMIES,
-        SETUP
+        SETUP,
+        ENEMY_INTENT
     };
 
     void Awake()
@@ -48,7 +49,7 @@ public class GameManager : MonoBehaviour
 
     void InitGame()
     {
-        ChangePhase(Phase.SETUP);
+        phase = Phase.SETUP;
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
         levelText.text = "Day " + level;
@@ -60,6 +61,9 @@ public class GameManager : MonoBehaviour
 
         enemies.Clear();
         boardScript.SetupScene(level);
+        print("after setup scene");
+        print(enemies);
+        ChangePhase();
     }
 
 
@@ -99,7 +103,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(enemy.moveTime);
         }
 
-        ChangePhase(Phase.PLAYER);
+        ChangePhase();
     }
 
     public void GameOver()
@@ -109,11 +113,32 @@ public class GameManager : MonoBehaviour
         enabled = false;
     }
 
-    public void ChangePhase(Phase p)
+    public Phase NextPhase()
     {
-        phase = p;
+        switch (phase)
+        {
+            case Phase.SETUP:
+                return Phase.ENEMY_INTENT;
+            case Phase.ENEMY_INTENT:
+                return Phase.PLAYER;
+            case Phase.PLAYER:
+                return Phase.ENEMIES;
+            case Phase.ENEMIES:
+                return Phase.ENEMY_INTENT;
+            default:
+                throw new System.Exception("Did not recognize phase");
 
-        switch (p)
+        }
+    }
+    public void ChangePhase()
+    {
+        print("Current phase: " + phase);
+
+        phase = NextPhase();
+
+        print("Next phase: " + phase);
+
+        switch (phase)
         {
             case Phase.SETUP:
                 break;
@@ -126,6 +151,14 @@ public class GameManager : MonoBehaviour
                 turnText = GameObject.Find("TurnText").GetComponent<Text>();
                 turnText.text = "Turn: " + turn;
                 StartCoroutine(MoveEnemies());
+                break;
+            case Phase.ENEMY_INTENT:
+                foreach (Enemy enemy in enemies)
+                {
+                    print(enemy);
+                    enemy.Intend();
+                }
+                ChangePhase();
                 break;
             default:
                 break;

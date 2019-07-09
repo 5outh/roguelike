@@ -11,12 +11,6 @@ public class SuperAttack : PlayerItem
         if (isActive)
         {
             spriteRenderer.color = Color.red;
-        } else
-        {
-            // Not sure why this has to be here, but things need to reset
-            // at the beginning of the turn.
-            // I think there is a race condition on Update functions.
-            //spriteRenderer.color = Color.white;
         }
     }
 
@@ -30,6 +24,7 @@ public class SuperAttack : PlayerItem
     {
         if (isActive)
         {
+            player.GetComponent<Animator>().SetTrigger("playerChop");
             GameManager.instance.KillEnemy(enemy);
         }
     }

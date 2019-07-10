@@ -44,7 +44,7 @@ public class ItemCycle : MonoBehaviour
             foreach (PlayerItem playerItem in playerItems)
             {
                 // Add an icon to the item cycle element.
-                if (playerItem.isActiveOnTurn(turn + i))
+                if (playerItem.IsActiveOnTurn(turn + i))
                 {
                     Instantiate(playerItem.icon, itemCycleElement.transform);
                 }

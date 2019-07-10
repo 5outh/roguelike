@@ -129,7 +129,6 @@ public class Enemy : MovingObject
 
     public void Intend()
     {
-        print("Intend was called");
         enemyIntent = GenerateIntent();
     }
 

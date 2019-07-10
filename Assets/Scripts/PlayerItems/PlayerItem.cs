@@ -16,7 +16,7 @@ public abstract class PlayerItem : MonoBehaviour
     public int cycleLength;
 
     // The icon to show in the item cycle
-    public Image icon;
+    public Sprite icon;
 
     protected virtual void Activate()
     {
@@ -73,8 +73,22 @@ public abstract class PlayerItem : MonoBehaviour
     }
 
     // Check if this item is active on the current turn
-    public bool isActiveOnTurn(int theTurn)
+    public bool IsActiveOnTurn(int theTurn)
     {
         return theTurn % cycleLength == 0;
+    }
+
+    public int GetTurnsUntilNextActivation(int theTurn)
+    {
+        int i = 0;
+        while (true)
+        {
+            if (IsActiveOnTurn(theTurn + i))
+            {
+                return i;
+            }
+            i++;
+        }
+
     }
 }

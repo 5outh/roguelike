@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public float turnDelay = 0.1f;
+    public float turnDelay = 0.2f;
     public static GameManager instance = null;
 
     public BoardManager boardScript;
@@ -75,7 +75,6 @@ public class GameManager : MonoBehaviour
 
     private void HideLevelImage()
     {
-        print("unset level image");
         levelImage.SetActive(false);
         phase = Phase.PLAYER;
     }
@@ -130,13 +129,17 @@ public class GameManager : MonoBehaviour
 
         }
     }
+
+    private IEnumerator Wait(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+    }
+
     public void ChangePhase()
     {
-        print("Current phase: " + phase);
-
         phase = NextPhase();
 
-        print("Next phase: " + phase);
+        StartCoroutine(Wait(turnDelay));
 
         switch (phase)
         {

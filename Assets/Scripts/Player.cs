@@ -25,11 +25,12 @@ public class Player : MovingObject
 
     public GameObject shieldPrefab;
     public GameObject shield;
-    public GameObject itemCycleImage;
 
     public bool damageNegated = false;
 
     public List<PlayerItem> playerItems = new List<PlayerItem>();
+
+    public GameObject itemBar;
 
     private void Awake()
     {
@@ -86,6 +87,27 @@ public class Player : MovingObject
         }
     }
 
+    private void DisplayPlayerItems()
+    {
+        int i = 0;
+        foreach (PlayerItem playerItem in playerItems)
+        {
+            Transform itemSlot = itemBar.transform.GetChild(i);
+            if (itemSlot)
+            {
+                Sprite itemSprite = playerItem.GetComponent<PlayerItem>().icon;
+                itemSlot.gameObject.GetComponent<Image>().sprite = itemSprite;
+                itemSlot.gameObject.GetComponent<Image>().color = Color.white;
+
+                Text itemText = itemSlot.transform.GetChild(0).GetComponent<Text>();
+                itemText.color = Color.white;
+                itemText.text = "" + playerItem.GetTurnsUntilNextActivation(GameManager.instance.turn);
+
+                i++;
+            }
+        }
+    }
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -93,6 +115,8 @@ public class Player : MovingObject
 
         food = GameManager.instance.playerFoodPoints;
         foodText.text = "Food: " + food;
+
+        DisplayPlayerItems();
 
         base.Start();
     }
@@ -127,9 +151,7 @@ public class Player : MovingObject
             item.OnPlayerTurnStart();
         }
 
-        // NB. This is inefficient
-        ItemCycle itemCycle = itemCycleImage.GetComponent<ItemCycle>();
-        itemCycle.Render(playerItems, GameManager.instance.turn);
+        DisplayPlayerItems();
 
         if (horizontal != 0 || vertical != 0)
         {

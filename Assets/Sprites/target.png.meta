@@ -60,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -104,8 +104,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -113,7 +113,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fa60ff25da837403691fa9d775e447ed
+      spriteID: de79363e4348e4cb5bbe22d8614a08dd
       internalID: -3561148701943319872
       vertices: []
       indices: 
@@ -123,10 +123,10 @@ TextureImporter:
       name: target_1
       rect:
         serializedVersion: 2
-        x: 16
+        x: 32
         y: 0
-        width: 16
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,7 +134,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7fe3713da004e48e49a9dd3a06246b3f
+      spriteID: 4d1a72d7ad6344edcbd401e776d8570a
       internalID: 6526703898722648163
       vertices: []
       indices: 
@@ -144,10 +144,10 @@ TextureImporter:
       name: target_2
       rect:
         serializedVersion: 2
-        x: 32
+        x: 64
         y: 0
-        width: 16
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,7 +155,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9f48d6cadf248450baa80e7e2ef79af8
+      spriteID: 8b342f6dc2add464c8d63146251ccd2d
       internalID: 6309007193198944101
       vertices: []
       indices: 
@@ -165,10 +165,10 @@ TextureImporter:
       name: target_3
       rect:
         serializedVersion: 2
-        x: 48
+        x: 96
         y: 0
-        width: 16
-        height: 16
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -176,7 +176,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7fe8bcc79958343c4a96e5845fdfe218
+      spriteID: b0de2eb2a1947432caf7afcde1ffb2aa
       internalID: -3570031561784051763
       vertices: []
       indices: 

@@ -16,6 +16,8 @@ public class EnemyAttackLocation : MonoBehaviour
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         CollisionList collisionList = gameObject.GetComponent<CollisionList>();
 
+        print(collisionList);
+
         return collisionList.Get(playerObject.GetInstanceID()) != null;
     }
 
@@ -24,8 +26,11 @@ public class EnemyAttackLocation : MonoBehaviour
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         Player player = playerObject.GetComponent<Player>();
 
+        print("Checking collision with player...");
+
         if (IsCollidingWithPlayer())
         {
+            print("Player collision!");
             player.LoseFood(attackDamage);
         }
     }

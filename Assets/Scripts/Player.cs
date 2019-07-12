@@ -44,8 +44,14 @@ public class Player : MovingObject
 
         if (other.tag == "Exit")
         {
-            Invoke("Restart", restartLevelDelay);
-            enabled = false;
+            Exit exit = other.gameObject.GetComponent<Exit>();
+            // Restart the level if the exit is open
+            if (exit.open)
+            {
+                Invoke("Restart", restartLevelDelay);
+                enabled = false;
+            }
+
         } else if (other.tag == "Food")
         {
             SoundManager.instance.RandomizeSfx(eatSound1,eatSound2);
@@ -59,7 +65,11 @@ public class Player : MovingObject
             foodText.text = "Food: " + food + "(+ " + pointsPerSoda + ")";
             food += pointsPerSoda;
             other.gameObject.SetActive(false);
-        }
+        } else if (other.tag == "EnemyAttack")
+		{
+			EnemyAttackLocation enemyAttackLocation = other.gameObject.GetComponent<EnemyAttackLocation>();
+			LoseFood(enemyAttackLocation.enemy.playerDamage);
+		}
     }
 
     private void Restart()
@@ -155,9 +165,6 @@ public class Player : MovingObject
 
         if (horizontal != 0 || vertical != 0)
         {
-            // Player's turn begins
-            food--;
-            foodText.text = "Food: " + food;
             CheckIfGameOver();
 
             Vector2 end = GetMoveCoordinates(horizontal, vertical);
@@ -186,6 +193,13 @@ public class Player : MovingObject
                     foreach (PlayerItem item in playerItems)
                     {
                         item.OnHitEnemy(hitEnemy);
+                    }
+
+                    // All enemies are dead! Open the door.
+                    if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
+                    {
+                        GameObject exit = GameObject.FindGameObjectWithTag("Exit");
+                        exit.GetComponent<Exit>().Open();
                     }
 
                 } else

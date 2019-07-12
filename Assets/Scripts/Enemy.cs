@@ -26,6 +26,9 @@ public class Enemy : MovingObject
 
     public EnemyIntent enemyIntent;
 
+	public GameObject enemyAttackLocationPrefab;
+	public List<GameObject> enemyAttackLocations = new List<GameObject>();
+
     enum Direction
     {
         L,
@@ -101,9 +104,8 @@ public class Enemy : MovingObject
             Vector2 start = (Vector2) transform.position;
             Vector2 location = start + DirectionToCoordinates(direction);
 
-            // NB. This is just visual right now
             EnemyTarget enemyTarget = Instantiate(enemyTargetPrefab, location, Quaternion.identity);
-            return new AttackLocation(start + location);
+            return new AttackLocation(location);
 
         } else
         {
@@ -118,7 +120,6 @@ public class Enemy : MovingObject
             Vector2 start = (Vector2)transform.position;
             Vector2 location = start + DirectionToCoordinates(direction);
 
-            // NB. This is just visual right now
             EnemyMove enemyMove = Instantiate(enemyMovePrefab, transform.position, Quaternion.identity);
             SpriteRenderer spriteRenderer = enemyMove.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = GetSpriteFromDirection(direction);
@@ -148,66 +149,24 @@ public class Enemy : MovingObject
                 animator.SetTrigger("enemyAttack");
                 SoundManager.instance.RandomizeSfx(enemyAttack1, enemyAttack2);
 
-                // TODO: Spawn EnemyAttackLocation and check for player collision.
+				GameObject enemyAttackLocation = Instantiate(enemyAttackLocationPrefab, (Vector3)attackLocation.location, Quaternion.identity);
+				enemyAttackLocation.GetComponent<EnemyAttackLocation>().enemy = this;
+				enemyAttackLocations.Add(enemyAttackLocation);
+
                 return;
             default:
                 throw new System.Exception("Not sure what to do with intent " + enemyIntent);
 
         }
-        /**
-         * Desired behavior for enemy ai:
-         *
-         * Before the Player's turn, generate an *Intent*
-         * An Intent can be either:
-         *
-         * - Attack to the left or right
-         * - Move to the left or right
-         *
-         * Player executes their turn.
-         *
-         * On the enemy's turn:
-         *
-         * - If intent is to attack, check if intended attack location collides with player.
-         *   - If so, hurt the player for playerDamage amount of food
-         * - If the intent is to move, move the enemy in the intended direction.
-         */
-
-        //int xDir = 0;
-        //int yDir = 0;
-
-        //// TODO: Figure out a position earlier?
-        //if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon)
-        //    yDir = target.position.y > transform.position.y ? 1 : -1;
-        //else
-        //    xDir = target.position.x > transform.position.x ? 1 : -1;
-
-        //Vector2 end = GetMoveCoordinates(xDir, yDir);
-        //Transform hitTransform = CanMove(end);
-
-        //if (hitTransform == null)
-        //{
-        //    if (skipMove)
-        //    {
-        //        Debug.Log("Generating enemy target");
-        //        GenEnemyTarget();
-        //        skipMove = false;
-        //        return;
-        //    }
-
-        //    GenEnemyAttackRight();
-
-        //    MoveSmooth(end);
-        //    skipMove = true;
-        //} else
-        //{
-        //    Player hitPlayer = hitTransform.GetComponent<Player>();
-        //    if (hitPlayer != null) {
-        //        animator.SetTrigger("enemyAttack");
-        //        hitPlayer.LoseFood(playerDamage);
-        //        SoundManager.instance.RandomizeSfx(enemyAttack1, enemyAttack2);
-        //    }
-        //}
     }
+
+    public void DestroyAttacks()
+	{
+        foreach (GameObject enemyAttackLocation in enemyAttackLocations)
+		{
+			Destroy(enemyAttackLocation);
+		}
+	}
 
     private Direction GenEnemyTargetDirection()
     {

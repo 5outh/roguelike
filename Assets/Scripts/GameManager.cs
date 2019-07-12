@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         phase = Phase.SETUP;
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
-        levelText.text = "Day " + level;
+        levelText.text = "Level " + level;
         levelImage.SetActive(true);
         Invoke("HideLevelImage", levelStartDelay);
 
@@ -61,8 +61,6 @@ public class GameManager : MonoBehaviour
 
         enemies.Clear();
         boardScript.SetupScene(level);
-        print("after setup scene");
-        print(enemies);
         ChangePhase();
     }
 
@@ -71,6 +69,7 @@ public class GameManager : MonoBehaviour
     {
         enemies.Remove(enemy);
         enemy.gameObject.SetActive(false);
+		enemy.DestroyAttacks();
     }
 
     private void HideLevelImage()
@@ -89,7 +88,7 @@ public class GameManager : MonoBehaviour
     IEnumerator MoveEnemies()
     {
         // Wait for the Player to move before moving enemies.
-        yield return new WaitForSeconds(turnDelay);
+        yield return new WaitForSeconds(turnDelay * 2);
 
         if (enemies.Count == 0)
         {
@@ -99,6 +98,7 @@ public class GameManager : MonoBehaviour
         foreach(Enemy enemy in enemies)
         {
             enemy.MoveEnemy();
+
             yield return new WaitForSeconds(enemy.moveTime);
         }
 
@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        levelText.text = "After " + level + " days, you starved.";
+        levelText.text = "You died! Score: " + level;
         levelImage.SetActive(true);
         enabled = false;
     }
@@ -156,6 +156,12 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(MoveEnemies());
                 break;
             case Phase.ENEMY_INTENT:
+				GameObject[] enemyAttacks = GameObject.FindGameObjectsWithTag("EnemyAttack");
+                foreach (GameObject enemyAttack in enemyAttacks)
+				{
+					Destroy(enemyAttack);
+				}
+
                 foreach (Enemy enemy in enemies)
                 {
                     print(enemy);

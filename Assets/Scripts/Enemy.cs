@@ -37,11 +37,15 @@ public class Enemy : MovingObject
         D
     }
 
-    public void Awake()
+    protected override void Start()
     {
-        GameManager.instance.AddEnemyToList(this);
         animator = GetComponent<Animator>();
-        target = GameObject.FindWithTag("Player").transform;
+        base.Start();
+    }
+
+    public void SetTarget(GameObject player)
+    {
+        target = player.transform;
     }
 
     private Vector2 DirectionToCoordinates(Direction d)

@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public float levelStartDelay;
     private Text levelText;
     private GameObject levelImage;
-    public GameObject playerPrefab;
+    public GameObject player;
     [HideInInspector] public Phase phase;
 
     public Text turnText;
@@ -60,6 +60,18 @@ public class GameManager : MonoBehaviour
         turnText.text = "Turn: " + turn;
 
         enemies.Clear();
+
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        // Add all current enemies to the list of tracked enemies in the scene.
+        GameObject[] enemyObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemyObject in enemyObjects)
+        {
+            Enemy enemy = enemyObject.GetComponent<Enemy>();
+            enemy.SetTarget(player);
+            enemies.Add(enemyObject.GetComponent<Enemy>());
+        }
+
         //boardScript.SetupScene(level);
         ChangePhase();
     }

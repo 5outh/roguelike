@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public float turnDelay = 0.2f;
     public static GameManager instance = null;
 
-    public BoardManager boardScript;
+    //public BoardManager boardScript;
 
     private int level = 1;
     public int playerFoodPoints = 100;
@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-        boardScript = GetComponent<BoardManager>();
+        //boardScript = GetComponent<BoardManager>();
         enemies = new List<Enemy>();
         InitGame();
     }
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         turnText.text = "Turn: " + turn;
 
         enemies.Clear();
-        boardScript.SetupScene(level);
+        //boardScript.SetupScene(level);
         ChangePhase();
     }
 

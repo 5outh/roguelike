@@ -38,6 +38,11 @@ public class Player : MovingObject
         shield.SetActive(false);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Player collided with: " + collision.ToString());
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Player Hit: " + other.tag);
@@ -204,7 +209,7 @@ public class Player : MovingObject
 
                 } else
                 {
-                    Debug.Log("Player hit something.");
+                    Debug.Log("Player hit something: " + hitTransform.ToString());
                 }
             }
 
